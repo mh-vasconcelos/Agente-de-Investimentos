@@ -1,0 +1,6 @@
+.env
+/venv
+PREADME.md
+db/
+base_pm/
+__pycache__/
