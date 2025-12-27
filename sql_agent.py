@@ -6,9 +6,8 @@ from urllib.parse import quote_plus
 from langchain_community.utilities import SQLDatabase
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_groq import ChatGroq
-from langchain_community.agent_toolkits import create_sql_agent # <--- A Mágica está aqui
+from langchain_community.agent_toolkits import create_sql_agent
 
-# Load environment variables
 load_dotenv()
 
 @st.cache_resource
@@ -24,7 +23,6 @@ def get_agent_engine():
     pw_enc = quote_plus(PASSWORD)
 
     DATABASE_URL = f"postgresql://{user_enc}:{pw_enc}@{HOST}:{PORT}/{DBNAME}"
-    # Se der erro de conexão adicionar ?sslmode=disable ou require no final da URL
     db = SQLDatabase.from_uri(DATABASE_URL)
 
     # model = ChatGoogleGenerativeAI(
@@ -40,12 +38,11 @@ def get_agent_engine():
         max_retries=2,api_key= groq_api_key)
 
     # --- 3. Criação do Agente  ---
-    # A função create_sql_agent já cria o Toolkit e injeta o System Prompt de SQL automaticamente
     agent_executor = create_sql_agent(
         llm=model,
         db=db,
-        agent_type="zero-shot-react-description", # Funciona melhor com Gemini para chamadas de função
-        verbose=True # Mostra o "pensamento" do robô no terminal
+        agent_type="zero-shot-react-description", 
+        verbose=True 
     )
 
     return agent_executor
